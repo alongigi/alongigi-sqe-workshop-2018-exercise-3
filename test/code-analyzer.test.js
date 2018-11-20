@@ -104,18 +104,71 @@ describe('The if else statement', () => {
 });
 
 describe('The while statement', () => {
-    it('is parsing simple while statement', () => {
-        createTable(parseCode('while(a < b){}'));
+    it('is parsing while statement', () => {
+        createTable(parseCode('while(a < b){\n' +
+            '    a = a + 1;\n' +
+            '}'));
         assert.deepEqual(
             structures,
-            [{line: 1, type: 'while statement', name: '', condition: 'a<b', value: ''}]
+            [{line: 1, type: 'while statement', name: '', condition: 'a<b', value: ''},
+                {line: 2, type: 'assignment expression', name: 'a', condition: '', value: 'a+1'}]
         );
     });
-    it('is parsing complex while statement', () => {
-        createTable(parseCode('while(b <= a){}'));
+    it('is parsing do while statement', () => {
+        createTable(parseCode('do{\n' +
+            'b = b - 1' +
+            '}while(b >= a)'));
         assert.deepEqual(
             structures,
-            [{line: 1, type: 'while statement', name: '', condition: 'b<=a', value: ''}]
+            [{line: 1, type: 'do while statement', name: '', condition: 'b>=a', value: ''},
+                {line: 2, type: 'assignment expression', name: 'b', condition: '', value: 'b-1'}]
+        );
+    });
+});
+
+describe('The for statement', () => {
+    it('is parsing a simple for statement', () => {
+        createTable(parseCode('let x = 3;\n' +
+            '    for( let i = 0; i <= 5; i=i+1){\n' +
+            '       x = x + 1;' +
+            '}'));
+        assert.deepEqual(
+            structures,
+            [{line: 1, type: 'variable declaration', name: 'x', condition: '', value: '3'},
+                {line: 2, type: 'for statement', name: '', condition: 'i<=5', value: ''},
+                {line: 3, type: 'assignment expression', name: 'x', condition: '', value: 'x+1'}]
+        );
+    });
+    it('is parsing a complex for statement', () => {
+        createTable(parseCode('for( let i = 0; i <= 5; i=i+1){\n' +
+            'for(let j = 0; j <= 5; j = j+1){' +
+            '}' +
+            '}'));
+        assert.deepEqual(
+            structures,
+            [{line: 1, type: 'for statement', name: '', condition: 'i<=5', value: ''},
+                {line: 2, type: 'for statement', name: '', condition: 'j<=5', value: ''}]
+        );
+    });
+});
+
+describe('The Update Expression', () => {
+    it('is parsing an update expression plus', () => {
+        createTable(parseCode('let y = 3;\n' +
+            '       y++;'));
+        assert.deepEqual(
+            structures,
+            [{line: 1, type: 'variable declaration', name: 'y', condition: '', value: '3'},
+                {line: 2, type: 'assignment statement', name: 'y', condition: '', value: 'y+1'}]
+        );
+    });
+    it('is parsing an update expression minus', () => {
+        createTable(parseCode('let z = 5;\n' +
+            'z--;'));
+        assert.deepEqual(
+            structures,
+            [{line: 1, type: 'variable declaration', name: 'z', condition: '', value: '5'},
+                {line: 2, type: 'assignment statement', name: 'z', condition: '', value: 'z-1'}]
         );
     });
 });

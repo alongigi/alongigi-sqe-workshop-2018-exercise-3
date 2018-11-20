@@ -23,7 +23,8 @@ const parseDataType = {
     'WhileStatement': parseWhileStatement,
     'ReturnStatement': parseReturnStatement,
     'ForStatement': parseForStatement,
-    'BlockStatement': createStructures
+    'BlockStatement': createStructures,
+    'DoWhileStatement': parseDoWhileStatement
 };
 
 const parseIfStatementType = {
@@ -75,29 +76,57 @@ function parseWhileStatement(expression, structures) {
     createStructures(expression.body, structures);
 }
 
+function parseDoWhileStatement(expression, structures) {
+    structures.push(createTableRow(expression.loc.start.line, 'do while statement', parseExpression(expression.test), '', ''));
+    createStructures(expression.body, structures);
+}
+
 function parseForStatement(expression, structures) {
     structures.push(createTableRow(expression.loc.start.line, 'for statement', parseExpression(expression.test), '', ''));
     createStructures(expression.body, structures);
 }
 
-function parseExpressionStatement(expression, structures) {
-    if (expression.expression.left != null && expression.expression.left !== undefined)
-        structures.push(createTableRow(expression.loc.start.line, 'assignment expression', '', expression.expression.left.name, parseExpression(expression.expression.right)));
-    else
-    if (expression.expression.name != null && expression.expression.name !== undefined)
-        structures.push(createTableRow(expression.loc.start.line, 'expression statement', '', expression.expression.name, ''));
+function parseUpdateExpression(expression, structures){
+    if(expression.expression.operator === '++')
+        structures.push(createTableRow(expression.loc.start.line, 'assignment statement', '', expression.expression.argument.name, expression.expression.argument.name + '+1'));
+    else if(expression.expression.operator === '--')
+        structures.push(createTableRow(expression.loc.start.line, 'assignment statement', '', expression.expression.argument.name, expression.expression.argument.name + '-1'));
     else
         structures.push(createTableRow(expression.loc.start.line, 'expression statement', '', '', expression.expression.value));
 }
 
+function parseExpressionStatement(expression, structures) {
+    if (expression.expression.left != null && expression.expression.left !== undefined)
+        structures.push(createTableRow(expression.loc.start.line, 'assignment expression', '', expression.expression.left.name, parseExpression(expression.expression.right)));
+    else if (expression.expression.name != null && expression.expression.name !== undefined)
+        structures.push(createTableRow(expression.loc.start.line, 'expression statement', '', expression.expression.name, ''));
+    else
+        parseUpdateExpression(expression, structures);
+}
+
+function simpleParse(right) {
+    if(right.type  === 'Literal')
+        return right.value.toString();
+    if(right.type === 'Identifier')
+        return right.name;
+}
+
+function recursionParse(right) {
+    if (right.type === 'UnaryExpression')
+        return right.operator + '' + parseExpression(right.argument);
+    if (right.type === 'MemberExpression')
+        return parseExpression(right.object) + '[' + parseExpression(right.property) + ']';
+    if (right.type === 'BinaryExpression')
+        return parseExpression(right.left) + '' + right.operator + '' + parseExpression(right.right);
+}
+
 function parseExpression(right) {
-    const tryParse = right.type === 'Literal' ? right.value.toString() : right.type === 'Identifier' ? right.name : false;
-    if (tryParse) return tryParse;
-    switch(right.type) {
-    case 'UnaryExpression': return right.operator + '' + parseExpression(right.argument);
-    case 'MemberExpression': return parseExpression(right.object) + '[' + parseExpression(right.property) + ']';
-    case 'BinaryExpression': return parseExpression(right.left) + '' + right.operator + '' + parseExpression(right.right);
-    }
+    const simple = ['Literal', 'Identifier'];
+    const recursion = ['UnaryExpression', 'MemberExpression', 'BinaryExpression'];
+    if(simple.includes(right.type))
+        return simpleParse(right);
+    else if (recursion.includes(right.type))
+        return recursionParse(right);
 }
 
 function parseReturnStatement(expression, structures) {
