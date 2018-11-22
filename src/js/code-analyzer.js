@@ -89,17 +89,13 @@ function parseForStatement(expression, structures) {
 function parseUpdateExpression(expression, structures){
     if(expression.expression.operator === '++')
         structures.push(createTableRow(expression.loc.start.line, 'assignment statement', '', expression.expression.argument.name, expression.expression.argument.name + '+1'));
-    else if(expression.expression.operator === '--')
-        structures.push(createTableRow(expression.loc.start.line, 'assignment statement', '', expression.expression.argument.name, expression.expression.argument.name + '-1'));
     else
-        structures.push(createTableRow(expression.loc.start.line, 'expression statement', '', '', expression.expression.value));
+        structures.push(createTableRow(expression.loc.start.line, 'assignment statement', '', expression.expression.argument.name, expression.expression.argument.name + '-1'));
 }
 
 function parseExpressionStatement(expression, structures) {
     if (expression.expression.left != null && expression.expression.left !== undefined)
         structures.push(createTableRow(expression.loc.start.line, 'assignment expression', '', expression.expression.left.name, parseExpression(expression.expression.right)));
-    else if (expression.expression.name != null && expression.expression.name !== undefined)
-        structures.push(createTableRow(expression.loc.start.line, 'expression statement', '', expression.expression.name, ''));
     else
         parseUpdateExpression(expression, structures);
 }
