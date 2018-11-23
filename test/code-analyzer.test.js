@@ -159,7 +159,7 @@ describe('The Update Expression', () => {
         assert.deepEqual(
             structures,
             [{line: 1, type: 'variable declaration', name: 'y', condition: '', value: '3'},
-                {line: 2, type: 'assignment statement', name: 'y', condition: '', value: 'y+1'}]
+                {line: 2, type: 'assignment expression', name: 'y', condition: '', value: 'y+1'}]
         );
     });
     it('is parsing an update expression minus', () => {
@@ -168,7 +168,7 @@ describe('The Update Expression', () => {
         assert.deepEqual(
             structures,
             [{line: 1, type: 'variable declaration', name: 'z', condition: '', value: '5'},
-                {line: 2, type: 'assignment statement', name: 'z', condition: '', value: 'z-1'}]
+                {line: 2, type: 'assignment expression', name: 'z', condition: '', value: 'z-1'}]
         );
     });
 });

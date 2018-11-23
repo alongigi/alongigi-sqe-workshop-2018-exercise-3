@@ -88,9 +88,9 @@ function parseForStatement(expression, structures) {
 
 function parseUpdateExpression(expression, structures){
     if(expression.expression.operator === '++')
-        structures.push(createTableRow(expression.loc.start.line, 'assignment statement', '', expression.expression.argument.name, expression.expression.argument.name + '+1'));
+        structures.push(createTableRow(expression.loc.start.line, 'assignment expression', '', expression.expression.argument.name, expression.expression.argument.name + '+1'));
     else
-        structures.push(createTableRow(expression.loc.start.line, 'assignment statement', '', expression.expression.argument.name, expression.expression.argument.name + '-1'));
+        structures.push(createTableRow(expression.loc.start.line, 'assignment expression', '', expression.expression.argument.name, expression.expression.argument.name + '-1'));
 }
 
 function parseExpressionStatement(expression, structures) {
