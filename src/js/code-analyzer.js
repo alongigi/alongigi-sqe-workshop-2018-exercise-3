@@ -112,8 +112,7 @@ function recursionParse(right) {
         return right.operator + '' + parseExpression(right.argument);
     if (right.type === 'MemberExpression')
         return parseExpression(right.object) + '[' + parseExpression(right.property) + ']';
-    if (right.type === 'BinaryExpression')
-        return parseExpression(right.left) + '' + right.operator + '' + parseExpression(right.right);
+    else return parseExpression(right.left) + '' + right.operator + '' + parseExpression(right.right);
 }
 
 function parseExpression(right) {
