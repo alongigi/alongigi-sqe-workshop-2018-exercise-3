@@ -33,9 +33,8 @@ const parseIfStatementType = {
 };
 
 function createStructures(parsedCode, structures) {
-    if (parsedCode !== [] && parsedCode.body !== undefined && parsedCode.body != null)
-        for (let i = 0; i < parsedCode.body.length; i++)
-            parseStatement(structures, parsedCode.body[i], false);
+    for (let i = 0; i < parsedCode.body.length; i++)
+        parseStatement(structures, parsedCode.body[i], false);
 }
 
 function parseStatement(structures, expression, elseIf) {
@@ -103,8 +102,7 @@ function parseExpressionStatement(expression, structures) {
 function simpleParse(right) {
     if(right.type  === 'Literal')
         return right.value.toString();
-    if(right.type === 'Identifier')
-        return right.name;
+    else return right.name;
 }
 
 function recursionParse(right) {
@@ -117,11 +115,9 @@ function recursionParse(right) {
 
 function parseExpression(right) {
     const simple = ['Literal', 'Identifier'];
-    const recursion = ['UnaryExpression', 'MemberExpression', 'BinaryExpression'];
     if(simple.includes(right.type))
         return simpleParse(right);
-    else if (recursion.includes(right.type))
-        return recursionParse(right);
+    else return recursionParse(right);
 }
 
 function parseReturnStatement(expression, structures) {
