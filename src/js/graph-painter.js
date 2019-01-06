@@ -43,15 +43,19 @@ function parseArguments(inputVector, code) {
     }
 }
 
+function addLine(vertexs, i, quote) {
+    vertexs[i] = vertexs[i].substring(0, quote + 1) + (i + 1) + '\n' + vertexs[i].substring(quote + 1);
+}
+
 function draw(vertexs, i, inputTypes, colorVertex) {
     let index = vertexs[i].lastIndexOf(']');
     let quote = vertexs[i].indexOf('"');
     if (parseDataType.includes(inputTypes[i][1])) {
         vertexs[i] = vertexs[i].substring(0, index) + ' ,shape="diamond"]';
-        vertexs[i] = vertexs[i].substring(0, quote + 1) + (i + 1) + '\n' + vertexs[i].substring(quote + 1);
+        addLine(vertexs, i, quote);
     } else {
         vertexs[i] = vertexs[i].substring(0, index) + ' ,shape="box"]';
-        vertexs[i] = vertexs[i].substring(0, quote + 1) + (i + 1) + '\n' + vertexs[i].substring(quote + 1);
+        addLine(vertexs, i, quote);
     }
     if (colorVertex.includes(vertexs[i].split(' ')[0])) {
         index = vertexs[i].lastIndexOf(']');
