@@ -1,28 +1,15 @@
 import $ from 'jquery';
-import {parseCode, createTable} from './code-analyzer';
+import {graphPaint} from './graph-painter';
+import Viz from 'viz.js';
+import { Module, render } from 'viz.js/full.render.js';
 
-let counter;
+let viz = new Viz({ Module, render });
 
 $(document).ready(function () {
     $('#codeSubmissionButton').click(() => {
-        let codeToParse = $('#codePlaceholder').val();
-        let parsedCode = parseCode(codeToParse);
-        $('#parsedCode').val(JSON.stringify(parsedCode, null, 2));
-        for (let row = document.getElementById('table').rows.length - 1; row >= 1; row--)
-            document.getElementById('table').deleteRow(row);
-        const structures = createTable(parsedCode);
-        counter = 1;
-        for (const structure of structures)
-            addLine(document.getElementById('table'), structure.line, structure.type, structure.name, structure.condition, structure.value);
+        viz.renderString('digraph  { ' + graphPaint($('#codePlaceholder').val(), $('#argumentsPlaceholder').val()) + ' }')
+            .then(result => {
+                document.getElementById('parsedCode').innerHTML = result;
+            });
     });
 });
-
-function addLine(table, line, type, name, condition, value) {
-    const row = table.insertRow(counter);
-    row.insertCell(0).appendChild(document.createTextNode(line));
-    row.insertCell(1).appendChild(document.createTextNode(type));
-    row.insertCell(2).appendChild(document.createTextNode(name));
-    row.insertCell(3).appendChild(document.createTextNode(condition));
-    row.insertCell(4).appendChild(document.createTextNode(value));
-    counter++;
-}

@@ -21,9 +21,15 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "escodegen": "^1.11.0",
+        "esgraph": "^0.3.0",
         "esprima": "^4.0.0",
+        "flowchart": "^1.2.0",
+        "flowchart.js": "^1.11.3",
         "jquery": "^3.3.1",
-        "node": "^11.1.0"
+        "node": "^11.5.0",
+        "string-format": "^2.0.0",
+        "viz.js": "^2.1.2"
     },
     "devDependencies": {
         "cross-env": "^5.2.0",
